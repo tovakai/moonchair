@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components.colorpreference
 
 import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.R
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
@@ -21,7 +22,7 @@ class ColorPreferenceModelList @Inject constructor(
             ColorPreferenceModel(
                 prefObject = prefs.accentColor,
                 labelRes = R.string.accent_color,
-                dynamicEntries = dynamicColors,
+                dynamicEntries = dynamicColors + ColorOption.Moonberry.colorPreferenceEntry,
             ),
         )
         registerModel(
