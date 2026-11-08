@@ -12,6 +12,7 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.widget.LauncherAppWidgetHostView
+import com.android.launcher3.touch.ItemLongClickListener
 
 /**
  * One interactive widget, anchored in the launcher's DragLayer rather than in a
@@ -66,6 +67,10 @@ class PinnedWidgetController(private val launcher: LawnchairLauncher) {
             visibility = View.INVISIBLE
         }
         originalParent.addView(placeholder, originalIndex, originalParams)
+        widget.setOnLongClickListener {
+            showPicker()
+            true
+        }
         launcher.dragLayer.addView(
             widget,
             FrameLayout.LayoutParams(1, 1).apply {
@@ -86,6 +91,7 @@ class PinnedWidgetController(private val launcher: LawnchairLauncher) {
         current = null
         val widget = entry.widget
         (widget.parent as? ViewGroup)?.removeView(widget)
+        widget.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE)
 
         if (entry.placeholder.parent === entry.originalParent) {
             entry.originalParent.removeView(entry.placeholder)

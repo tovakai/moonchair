@@ -51,6 +51,9 @@ import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.LawnchairFloatingSurfaceView
+import app.lawnchair.widgets.PinnedWidgetController
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
@@ -105,6 +108,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         WindowInsetsControllerCompat(window, rootView)
     }
     private val themeProvider by unsafeLazy { ThemeProvider.INSTANCE.get(this) }
+    val pinnedWidgetController by lazy { PinnedWidgetController(this) }
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is OverviewState) {
@@ -167,6 +171,14 @@ class LawnchairLauncher : QuickstepLauncher() {
             defaultOverlay.setEnableFeed(enable)
         }.launchIn(scope = lifecycleScope)
         launcher.stateManager.addStateListener(clearSearchStateListener)
+        launcher.stateManager.addStateListener(object : StateManager.StateListener<LauncherState> {
+            override fun onStateTransitionStart(toState: LauncherState) {
+                pinnedWidgetController.updateVisibility(toState)
+            }
+            override fun onStateTransitionComplete(finalState: LauncherState) {
+                pinnedWidgetController.updateVisibility(finalState)
+            }
+        })
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
@@ -351,15 +363,29 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun showDefaultOptions(x: Float, y: Float) {
         val showWallpaperCarousel = "+carousel" in preferenceManager2.launcherPopupOrder.firstCached()
-
+        val actions = OptionsPopupView.getOptions(this).toMutableList()
+        actions.add(
+            OptionItem(
+                this,
+                R.string.moonchair_pin_widget,
+                R.drawable.ic_widget,
+                StatsLogManager.LauncherEvent.IGNORE,
+                View.OnLongClickListener {
+                    AbstractFloatingView.closeAllOpenViews(this)
+                    pinnedWidgetController.showPicker()
+                    true
+                },
+            ),
+        )
         if (showWallpaperCarousel) {
-            show<LawnchairLauncher>(
+            show<LawnchairLauncher>(this, getPopupTarget(x, y), actions)
+        } else {
+            OptionsPopupView.show<LawnchairLauncher>(
                 this,
                 getPopupTarget(x, y),
-                OptionsPopupView.getOptions(this),
+                actions,
+                false,
             )
-        } else {
-            super.showDefaultOptions(x, y)
         }
     }
 
@@ -495,9 +521,18 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun onStateSetEnd(state: LauncherState) {
         super.onStateSetEnd(state)
         refreshPredictionContainersFromModel()
+        pinnedWidgetController.updateVisibility(state)
+    }
+
+    override fun bindAppWidget(item: LauncherAppWidgetInfo) {
+        super.bindAppWidget(item)
+        if (PinnedWidgetController.isPinned(item)) {
+            workspace.post { pinnedWidgetController.pinBoundWidget(item) }
+        }
     }
 
     override fun onDestroy() {
+        pinnedWidgetController.clearOnDestroy()
         super.onDestroy()
         // Only actually closes if required, safe to call if not enabled
         SmartspacerClient.close()
