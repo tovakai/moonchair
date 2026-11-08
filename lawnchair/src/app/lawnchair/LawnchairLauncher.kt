@@ -524,6 +524,11 @@ class LawnchairLauncher : QuickstepLauncher() {
         pinnedWidgetController.updateVisibility(state)
     }
 
+    override fun onPageEndTransition() {
+        super.onPageEndTransition()
+        pinnedWidgetController.updateVisibility(stateManager.state)
+    }
+
     override fun bindAppWidget(item: LauncherAppWidgetInfo) {
         super.bindAppWidget(item)
         if (PinnedWidgetController.isPinned(item)) {
