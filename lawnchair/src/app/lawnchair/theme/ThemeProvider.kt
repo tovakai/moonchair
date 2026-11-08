@@ -14,6 +14,7 @@ import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.MonetColorSchemeCompat
+import app.lawnchair.theme.color.MoonberryColorScheme
 import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
@@ -101,6 +102,8 @@ class ThemeProvider @Inject constructor(
     }
 
     val colorScheme get() = when (val accentColor = this.accentColor) {
+        is ColorOption.Moonberry -> MoonberryColorScheme
+
         is ColorOption.SystemAccent -> systemColorScheme
 
         is ColorOption.WallpaperPrimary -> {

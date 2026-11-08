@@ -42,6 +42,18 @@ sealed class ColorOption {
         override fun toString() = "wallpaper_primary"
     }
 
+    /** An explicit, fixed color scheme for the Moonchair fork. */
+    object Moonberry : ColorOption() {
+        override val isSupported = true
+        override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
+            this,
+            { stringResource(id = R.string.moonberry_theme_label) },
+            { 0xFFF5ACD8.toInt() },
+            { 0xFFF5ACD8.toInt() },
+        )
+        override fun toString() = "moonberry"
+    }
+
     class CustomColor(val color: Int) : ColorOption() {
         override val isSupported = true
 
@@ -76,6 +88,7 @@ sealed class ColorOption {
         val LawnchairBlue = CustomColor(0xFF007FFF)
 
         fun fromString(stringValue: String) = when (stringValue) {
+            "moonberry" -> Moonberry
             "system_accent" -> SystemAccent
             "wallpaper_primary" -> WallpaperPrimary
             "default" -> Default

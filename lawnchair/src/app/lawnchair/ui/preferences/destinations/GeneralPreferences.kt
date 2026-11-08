@@ -161,8 +161,8 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
         }
 
         val accentColorAdapter = prefs2.accentColor.getAdapter()
-        val showColorStyle = !(Utilities.ATLEAST_S && accentColorAdapter.state.value == ColorOption.SystemAccent) ||
-            !Utilities.ATLEAST_S
+        val showColorStyle = accentColorAdapter.state.value != ColorOption.Moonberry &&
+            (!(Utilities.ATLEAST_S && accentColorAdapter.state.value == ColorOption.SystemAccent) || !Utilities.ATLEAST_S)
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
             ThemePreference()

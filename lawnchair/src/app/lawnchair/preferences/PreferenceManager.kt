@@ -106,7 +106,7 @@ class PreferenceManager @Inject constructor(
 
     val hotseatColumns = IntPref("pref_hotseatColumns", calculatedGridSpec.hotseatColumns, reloadGrid)
     val hotseatColumnsUnfolded = IntPref("pref_hotseatColumnsUnfolded", calculatedGridSpec.hotseatColumnsUnfolded, reloadGrid)
-    val hotseatRows = IntPref("pref_hotseatRows", 1, reloadGrid)
+    val hotseatRows = IntPref("pref_hotseatRows", 2, reloadGrid)
     val dockPages = IntPref("pref_dockPages", 1, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", calculatedGridSpec.workspaceColumns)
     val workspaceRows = IntPref("pref_workspaceRows", calculatedGridSpec.workspaceRows)
@@ -117,7 +117,7 @@ class PreferenceManager @Inject constructor(
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 1F)
     val feedProvider = StringPref("pref_feedProvider", "")
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
-    val launcherTheme = StringPref("pref_launcherTheme", "system")
+    val launcherTheme = StringPref("pref_launcherTheme", "dark")
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)

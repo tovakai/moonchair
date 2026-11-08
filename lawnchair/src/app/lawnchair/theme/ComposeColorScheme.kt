@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import app.lawnchair.theme.color.MoonberryColorScheme
 import androidx.core.math.MathUtils
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -79,6 +80,68 @@ private fun delinearized(rgbComponent: Float): Int {
 
 @Composable
 fun dev.kdrag0n.monet.theme.ColorScheme.toComposeColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
+    // A fixed palette, unaffected by Monet styles or wallpaper color extraction.
+    if (this === MoonberryColorScheme) {
+        return@remember if (isDark) {
+            darkColorScheme(
+                primary = Color(0xFFF5ACD8),
+                onPrimary = Color(0xFF432838),
+                primaryContainer = Color(0xFF653D55),
+                onPrimaryContainer = Color(0xFFFFE0EF),
+                inversePrimary = Color(0xFF9B547F),
+                secondary = Color(0xFFE5B9F5),
+                onSecondary = Color(0xFF432838),
+                secondaryContainer = Color(0xFF61446C),
+                onSecondaryContainer = Color(0xFFF8E5FF),
+                tertiary = Color(0xFFFFE0CF),
+                onTertiary = Color(0xFF432838),
+                tertiaryContainer = Color(0xFF6B4957),
+                onTertiaryContainer = Color(0xFFFFE9DC),
+                background = Color(0xFF432838),
+                onBackground = Color(0xFFFFE0CF),
+                surface = Color(0xFF432838),
+                onSurface = Color(0xFFFFE0CF),
+                surfaceVariant = Color(0xFF58394F),
+                onSurfaceVariant = Color(0xFFE5B9F5),
+                inverseSurface = Color(0xFFFFE0CF),
+                inverseOnSurface = Color(0xFF432838),
+                outline = Color(0xFFC99DC0),
+                outlineVariant = Color(0xFF79546D),
+                scrim = Color(0xFF21121C),
+                surfaceBright = Color(0xFF68455E),
+                surfaceDim = Color(0xFF35202E),
+                surfaceContainerHighest = Color(0xFF624058),
+                surfaceContainerHigh = Color(0xFF58394F),
+                surfaceContainer = Color(0xFF4D3042),
+                surfaceContainerLow = Color(0xFF432838),
+                surfaceContainerLowest = Color(0xFF35202E),
+                surfaceTint = Color(0xFFF5ACD8),
+            )
+        } else {
+            lightColorScheme(
+                primary = Color(0xFF8B4E75),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFF5ACD8),
+                onPrimaryContainer = Color(0xFF432838),
+                secondary = Color(0xFF78578B),
+                onSecondary = Color(0xFFFFFFFF),
+                secondaryContainer = Color(0xFFE5B9F5),
+                onSecondaryContainer = Color(0xFF432838),
+                tertiary = Color(0xFF966854),
+                onTertiary = Color(0xFFFFFFFF),
+                background = Color(0xFFFFF5F7),
+                onBackground = Color(0xFF432838),
+                surface = Color(0xFFFFF5F7),
+                onSurface = Color(0xFF432838),
+                surfaceVariant = Color(0xFFFFE0CF),
+                onSurfaceVariant = Color(0xFF604357),
+                outline = Color(0xFF957B8A),
+                outlineVariant = Color(0xFFDBC6D0),
+                surfaceTint = Color(0xFF8B4E75),
+            )
+        }
+    }
+
     val neutral4 = neutral(40).setLuminance(4f)
     val neutral6 = neutral(40).setLuminance(6f)
     val neutral12 = neutral(40).setLuminance(12f)
