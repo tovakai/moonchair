@@ -113,6 +113,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         title = info.title;
         intent = new Intent(info.intent);
         status = info.status;
+        options = info.options;
         personKeys = info.personKeys.clone();
     }
 

@@ -84,6 +84,7 @@ import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
+import app.lawnchair.icons.MoonchairIconStyles;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
@@ -513,6 +514,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @VisibleForTesting
     @UiThread
     public void applyIconAndLabel(ItemInfoWithIcon info) {
+        mMoonchairIconGroup = info instanceof WorkspaceItemInfo
+                ? MoonchairIconStyles.getGroup((WorkspaceItemInfo) info) : 0;
         FastBitmapDrawable oldIcon = mIcon;
         if (!canReuseIcon(info)) {
             setNonPendingIcon(info);
@@ -1447,6 +1450,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     /**
      * Sets the icon for this view based on the layout direction.
      */
+    // A per-shortcut visual style. Cached app icons remain untouched.
+    private int mMoonchairIconGroup;
+
     protected void setIcon(FastBitmapDrawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
@@ -1491,6 +1497,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
         if (icon instanceof FastBitmapDrawable fbd) {
             fbd.resetScale();
+            if (mMoonchairIconGroup != 0 && !(icon instanceof PreloadIconDrawable)
+                    && !(icon instanceof PlaceHolderIconDrawable)) {
+                icon = MoonchairIconStyles.wrap(icon, mMoonchairIconGroup);
+            }
         }
         icon.setBounds(0, 0, mIconSize, mIconSize);
 
