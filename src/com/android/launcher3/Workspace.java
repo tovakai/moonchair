@@ -3671,6 +3671,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * @param appWidgetId
      */
     public void removeWidget(int appWidgetId) {
+        if (mLauncher instanceof app.lawnchair.LawnchairLauncher lc
+                && lc.getPinnedWidgetController().getPinnedWidget(appWidgetId) != null) {
+            lc.getPinnedWidgetController().unpinActive(false);
+        }
         mapOverItems((info, view) -> {
             if (info instanceof LauncherAppWidgetInfo) {
                 LauncherAppWidgetInfo appWidgetInfo = (LauncherAppWidgetInfo) info;
@@ -3772,6 +3776,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public LauncherAppWidgetHostView getWidgetForAppWidgetId(final int appWidgetId) {
+        if (mLauncher instanceof app.lawnchair.LawnchairLauncher lc) {
+            LauncherAppWidgetHostView pinned = lc.getPinnedWidgetController()
+                    .getPinnedWidget(appWidgetId);
+            if (pinned != null) return pinned;
+        }
         return (LauncherAppWidgetHostView) mapOverItems((info, v) ->
                 (info instanceof LauncherAppWidgetInfo lawi) && lawi.appWidgetId == appWidgetId);
     }

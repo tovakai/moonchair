@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="moonberry_theme_label">Moonberry</string>
+    <string name="moonchair_pin_widget">Pin widget across pages</string>
+    <string name="moonchair_unpin_widget">Unpin current widget</string>
+    <string name="moonchair_no_widgets">Add a widget to the homescreen first</string>
 </resources>
