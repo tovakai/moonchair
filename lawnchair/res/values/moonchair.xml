@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="moonberry_theme_label">Moonberry</string>
+    <string name="moonchair_icon_style_title">Icon style</string>
+    <string name="moonchair_icon_style_original">Original</string>
+    <string name="moonchair_icon_style_neko">Neko · peach / plum</string>
+    <string name="moonchair_icon_style_hex">Hex · plum / pink</string>
+    <string name="moonchair_icon_style_luna">Luna · lavender / plum</string>
 </resources>

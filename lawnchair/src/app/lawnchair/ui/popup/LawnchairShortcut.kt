@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.icons.MoonchairIconStyles
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -31,6 +32,8 @@ import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -40,6 +43,8 @@ import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.BubbleTextView
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
@@ -88,6 +93,20 @@ class LawnchairShortcut {
                 true,
             ) != null
         }
+
+        /** Per-shortcut style selection, stored on the workspace item. */
+        val MOONCHAIR_ICON_STYLE =
+            SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
+                val prefs = PreferenceManager2.getInstance(activity)
+                if (prefs.lockHomeScreen.firstCached() ||
+                    itemInfo !is WorkspaceItemInfo ||
+                    itemInfo.container !in setOf(CONTAINER_DESKTOP, CONTAINER_HOTSEAT)
+                ) {
+                    null
+                } else {
+                    IconStyle(activity, itemInfo, originalView)
+                }
+            }
 
         val CUSTOMIZE =
             SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
@@ -189,6 +208,41 @@ class LawnchairShortcut {
             }
 
             PauseApps(activity, itemInfo, originalView)
+        }
+    }
+
+    class IconStyle(
+        private val launcher: LawnchairLauncher,
+        itemInfo: WorkspaceItemInfo,
+        originalView: View,
+    ) : SystemShortcut<LawnchairLauncher>(
+        R.drawable.ic_edit,
+        R.string.moonchair_icon_style_title,
+        launcher,
+        itemInfo,
+        originalView,
+    ) {
+        override fun onClick(v: View) {
+            val item = mItemInfo as WorkspaceItemInfo
+            AbstractFloatingView.closeAllOpenViews(launcher)
+            AlertDialog.Builder(launcher)
+                .setTitle(R.string.moonchair_icon_style_title)
+                .setSingleChoiceItems(
+                    arrayOf(
+                        launcher.getString(R.string.moonchair_icon_style_original),
+                        launcher.getString(R.string.moonchair_icon_style_neko),
+                        launcher.getString(R.string.moonchair_icon_style_hex),
+                        launcher.getString(R.string.moonchair_icon_style_luna),
+                    ),
+                    MoonchairIconStyles.getGroup(item),
+                ) { dialog, choice ->
+                    MoonchairIconStyles.setGroup(item, choice)
+                    launcher.modelWriter.updateItemInDatabase(item)
+                    (mOriginalView as? BubbleTextView)?.applyFromWorkspaceItem(item)
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
         }
     }
 
